@@ -14,9 +14,9 @@ function Find-DuplicateCharacter {
         [string]$foo
     )
     $unique = [System.Collections.Generic.HashSet[char]]::new()
-    for ($i = 0; $i -lt $foo.Length; $i++) {
-        if (-not $unique.Add($foo[$i])) {
-            $foo[$i]
+    foreach ($char in $foo.ToCharArray()) {
+        if (-not $unique.Add($char)) {
+            $char
             return
         }
     }
