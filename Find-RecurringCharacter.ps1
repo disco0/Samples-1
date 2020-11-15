@@ -1,22 +1,22 @@
-function Find-DuplicateCharacter {
+function Find-RecurringCharacter {
     <#
         .SYNOPSIS
-            Finds the first duplicate character in the input string $foo
+            Finds the first recurring character in the input string $foo
         .EXAMPLE
-            Find-DuplicateCharacter 'abcdedcba'
+            Find-RecurringCharacter 'abcdedcba'
 
-            # Returns the first duplicate character, 'd'
+            # Returns the first Recurring character, 'd'
         .EXAMPLE
             $UnicodeString = $ExecutionContext.InvokeCommand.ExpandString(-join @(19968..40908).ForEach{"``u{$("{0:x}" -f $_)}"})
             $UnicodeString += $UnicodeString.ToCharArray() | Get-Random -OutVariable char
-            $Result = Find-DuplicateCharacter $UnicodeString
+            $Result = Find-RecurringCharacter $UnicodeString
             $Char -eq $Result
 
             # This example shows one way to test the function:
             # - How to generate a really long string of unique unicode characters
-            # - How to guarantee it has a duplicate by appending a copy of a random character
-            # - How to use Find-DuplicateCharacter to find the duplicate character
-            # - How to verify the duplicate was the right character
+            # - How to guarantee it has a Recurring by appending a copy of a random character
+            # - How to use Find-RecurringCharacter to find the Recurring character
+            # - How to verify the Recurring was the right character
     #>
     [CmdletBinding()]
     param(

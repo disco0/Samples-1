@@ -2,9 +2,9 @@ This repository holds a few samples of PowerShell scripts that I'm keeping aroun
 
 # Highlights
 
-## Find-DuplicateCharacter
+## Find-RecurringCharacter
 
-This was written on request, and mostly it demonstrates the proper use of a hashset as a fast, case-sensitive lookup. A Hashset is a generic collection that's basically like the Keys of a hashtable. It doesn't allow duplicates, and if you make it a `HashSet[char]` it is case-sensitive by default.
+This was written on request, and mostly it demonstrates the proper use of a hashset as a fast, case-sensitive lookup. A Hashset is a generic collection that's basically like the Keys of a hashtable. It doesn't allow Recurrings, and if you make it a `HashSet[char]` it is case-sensitive by default.
 
 ## Measure-ScriptPerformance
 

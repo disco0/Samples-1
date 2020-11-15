@@ -1,7 +1,7 @@
-Describe "Find-DuplicateCharacter" {
+Describe "Find-RecurringCharacter" {
     BeforeAll {
         . $PSScriptRoot\Measure-ScriptPerformance.ps1
-        . $PSScriptRoot\Find-DuplicateCharacter.ps1
+        . $PSScriptRoot\Find-RecurringCharacter.ps1
     }
 
     $EastAsian = $ExecutionContext.InvokeCommand.ExpandString(
@@ -13,21 +13,21 @@ Describe "Find-DuplicateCharacter" {
         @{ ExpectedResult = 'd'; InputObject = "abcdedcba" }
         # Stuff that looks like numbers should work
         @{ ExpectedResult = '1'; InputObject = "112233445566778899" }
-        # Longer string with the duplicate at the front
+        # Longer string with the Recurring at the front
         @{ ExpectedResult = 'a'; InputObject = "aabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ,<>./?;:'[{]}_-+=" }
-        # Longer string with the duplicate at the very end
+        # Longer string with the Recurring at the very end
         @{ ExpectedResult = '+'; InputObject = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ,<>./?;:'[{]}_-=++" }
         # A couple of normal cases
         @{ ExpectedResult = 'g'; InputObject = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()gABCDEFGHIJKLMNOPQRSTUVWXYZ,<>./?;:'[{]}_-+=" }
         @{ ExpectedResult = 'z'; InputObject = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ,<>./?;:'[{]}_-+=zyxwvutsrqponmlkjihgfedcba" }
         # Pathologically long, all 28k chinese characters
-        # Without any duplicates
+        # Without any Recurrings
         @{ ExpectedResult = $null; InputObject = $EastAsian }
-        # Random duplicates at the end
+        # Random Recurrings at the end
         @{ ExpectedResult = ($ch = $EastAsian.ToCharArray() | Get-Random); InputObject = $EastAsian + $ch }
         @{ ExpectedResult = ($ch = $EastAsian.ToCharArray() | Get-Random); InputObject = $EastAsian + $ch }
         @{ ExpectedResult = ($ch = $EastAsian.ToCharArray() | Get-Random); InputObject = $EastAsian + $ch }
-        # Random duplicates in the middle
+        # Random Recurrings in the middle
         @{ ExpectedResult = ($ch = $EastAsian.ToCharArray() | Get-Random); InputObject = $EastAsian.Replace($EastAsian[(Get-Random -min 0 -max 28e3)], $ch) }
         @{ ExpectedResult = ($ch = $EastAsian.ToCharArray() | Get-Random); InputObject = $EastAsian.Replace($EastAsian[(Get-Random -min 0 -max 28e3)], $ch) }
         @{ ExpectedResult = ($ch = $EastAsian.ToCharArray() | Get-Random); InputObject = $EastAsian.Replace($EastAsian[(Get-Random -min 0 -max 28e3)], $ch) }
@@ -36,17 +36,17 @@ Describe "Find-DuplicateCharacter" {
 
     It "Returns <ExpectedResult> for <Substring>..." -TestCases $TestCases {
         param($ExpectedResult, $InputObject)
-        $InputObject | Find-DuplicateCharacter | Should -Be $ExpectedResult
+        $InputObject | Find-RecurringCharacter | Should -Be $ExpectedResult
     }
 
     It "Runs small samples 1000x in under 100ms" -TestCases $TestCases.Where{$_.InputObject.Length -lt 120} {
         param($ExpectedResult, $InputObject)
-        Measure-ScriptPerformance { $InputObject | Find-DuplicateCharacter } -Count 1000 | Select-Object -Expand "Sum(ms)" | Should -BeLessThan 100
+        Measure-ScriptPerformance { $InputObject | Find-RecurringCharacter } -Count 1000 | Select-Object -Expand "Sum(ms)" | Should -BeLessThan 100
     }
 
     It "Runs large samples 100x in under 1s" -TestCases $TestCases.Where{ $_.InputObject.Length -gt 28e3 } {
         param($ExpectedResult, $InputObject)
-        Measure-ScriptPerformance { $InputObject | Find-DuplicateCharacter } -Count 100 | Select-Object -Expand "Sum(ms)" | Should -BeLessThan 1000
+        Measure-ScriptPerformance { $InputObject | Find-RecurringCharacter } -Count 100 | Select-Object -Expand "Sum(ms)" | Should -BeLessThan 1000
     }
 
 }
