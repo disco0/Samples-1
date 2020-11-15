@@ -1,34 +1,6 @@
 Describe "Find-DuplicateCharacter" {
     BeforeAll {
-        filter Measure-Script {
-            <#
-                .SYNOPSIS
-                    A wrapper for Measure-Command to run commands multiple times and report averages (avg, min, max)
-            #>
-            param(
-                # The script to measure
-                [Parameter(ValueFromPipeline)]
-                [ScriptBlock]$Expression,
-
-                # Number of iterations to run
-                [int]$Count = 1000
-            )
-            @(1..$Count).ForEach{ Measure-Command $Expression } |
-                Measure-Object TotalMilliseconds -Average -Minimum -Maximum -Sum |
-                ForEach-Object {
-                    [PSCustomObject]@{
-                        PSTypeName = "ScriptRunTimings"
-                        "Avg(ms)"  = $_.Average
-                        "Max(ms)"  = $_.Maximum
-                        "Min(ms)"  = $_.Minimum
-                        "Sum(ms)"  = $_.Sum
-                        Expression = $Expression
-                        Count      = $_.Count
-                    }
-                }
-        }
-        Update-TypeData -TypeName ScriptRunTimings -DefaultDisplayPropertySet "Avg(ms)", "Max(ms)", "Min(ms)", Expression -Force
-
+        . $PSScriptRoot\Measure-ScriptPerformance.ps1
         . $PSScriptRoot\Find-DuplicateCharacter.ps1
     }
 
@@ -69,12 +41,12 @@ Describe "Find-DuplicateCharacter" {
 
     It "Runs small samples 1000x in under 100ms" -TestCases $TestCases.Where{$_.InputObject.Length -lt 120} {
         param($ExpectedResult, $InputObject)
-        Measure-Script { $InputObject | Find-DuplicateCharacter } -Count 1000 | Select-Object -Expand "Sum(ms)" | Should -BeLessThan 100
+        Measure-ScriptPerformance { $InputObject | Find-DuplicateCharacter } -Count 1000 | Select-Object -Expand "Sum(ms)" | Should -BeLessThan 100
     }
 
     It "Runs large samples 100x in under 1s" -TestCases $TestCases.Where{ $_.InputObject.Length -gt 28e3 } {
         param($ExpectedResult, $InputObject)
-        Measure-Script { $InputObject | Find-DuplicateCharacter } -Count 100 | Select-Object -Expand "Sum(ms)" | Should -BeLessThan 1000
+        Measure-ScriptPerformance { $InputObject | Find-DuplicateCharacter } -Count 100 | Select-Object -Expand "Sum(ms)" | Should -BeLessThan 1000
     }
 
 }
